@@ -95,7 +95,7 @@ LangChain provides the building blocks:
 
 - **Chat Models** — Unified interface to OpenAI, Anthropic, Google, etc.
 - **Tools** — `@tool` decorator to turn any function into an agent tool
-- **Agents** — `create_react_agent` wires an LLM to tools in a ReAct loop
+- **Agents** — `create_agent` wires an LLM to tools in a ReAct loop
 - **Output Parsers** — Structure LLM outputs into Python objects
 
 ### Architecture:
