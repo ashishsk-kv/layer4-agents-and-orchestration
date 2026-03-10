@@ -1,0 +1,99 @@
+﻿Layer 1 — Mental Models (1-2 sessions, conceptual only)
+The goal here isn't depth, it's giving engineers the vocabulary to reason about AI systems confidently.
+* What is an LLM and how does text generation actually work — tokens, probabilities, context windows
+* The broader AI landscape in 2026 — LLMs, multimodal models, embedding models, image/audio models, where each fits
+* How model capabilities have shifted — why prompting and context design matter more than model selection in most cases
+* Key limitations to internalize early — hallucination, context limits, non-determinism, knowledge cutoff
+Drop entirely: Regression, Classification, Clustering, ANN, CNN, RNN, LSTM, Stemming, Lemmatization, Diffusion models, OCR. These belong in an ML specialization track, not an AI engineering track.
+________________
+
+
+Layer 2 — Working with Models (core, must be hands-on)
+Prompt Engineering
+* Instruction → context → query structure
+* System prompts and persona design
+* Few-shot prompting
+* Chain-of-thought for reasoning tasks
+* Common failure modes: hallucination, prompt injection, ambiguity
+Multimodal Inputs
+* Working with vision-capable models (image + text inputs)
+* Audio transcription pipelines (Whisper and equivalents)
+* Document understanding — PDFs, tables, unstructured content
+* This is where OCR conceptually belongs — not as a standalone topic but as part of document AI pipelines
+Structured Outputs & Function Calling
+* JSON mode and schema enforcement
+* Tool/function calling — how models decide when to use tools
+* Parsing and validating model outputs in production code
+* This is heavily used in real projects and often undertaught
+________________
+
+
+Layer 3 — Retrieval & Memory
+Embeddings & Semantic Search
+* What embeddings represent and why they matter
+* Cosine similarity, vector search basics
+* Choosing embedding models — general vs domain-specific
+RAG Pipelines
+* Why RAG exists — grounding, accuracy, reducing hallucinations
+* Full pipeline: document ingestion → chunking → embedding → indexing → retrieval → augmentation → generation
+* Chunking strategies — fixed, semantic, hierarchical — and why this is where most RAG pipelines break
+* Vector databases — Pinecone, Weaviate, pgvector — practical tradeoffs
+Context & Memory Management
+* Conversation history patterns — full history vs sliding window vs summarization
+* Short-term vs long-term memory in applications
+* When context length alone isn't enough
+________________
+
+
+Layer 4 — Agents & Orchestration
+This is where 2026 project work is increasingly landing. BE engineers need this more than they need to know what an LSTM is.
+Agent Fundamentals
+* What agents are — perceive → reason → act loops
+* Tool use and tool calling patterns
+* ReAct pattern — reasoning + acting
+* When to use agents vs simple RAG vs a basic API call — this judgment is underrated
+LangChain & LangGraph
+* LangChain for chains, tools, and retrieval integration
+* LangGraph for stateful, multi-step, multi-agent workflows
+* Tracing and observability with LangSmith or equivalent
+Multi-Agent Systems (Awareness Level)
+* Orchestrator vs subagent patterns
+* Frameworks emerging in 2026 — CrewAI, AutoGen, OpenAI Swarm concepts
+* When multi-agent adds value vs adds complexity
+________________
+
+
+Layer 5 — Model Selection & Customization
+Choosing the Right Model
+* Frontier models vs open-source — GPT-4o, Claude, Gemini, Llama, Mistral
+* Hosted APIs vs self-hosted tradeoffs — cost, latency, data privacy
+* Multimodal model selection — when you need vision, audio, code
+Fine-tuning — Conceptual
+* What fine-tuning changes about a model
+* When fine-tuning makes sense over RAG over prompting
+* PEFT / LoRA concepts at awareness level — engineers should know these exist and roughly what they do, not implement them
+Context Caching & Cost Management
+* Token economics — why this matters for production systems
+* Prompt caching (Anthropic, OpenAI both offer this now)
+* Rate limits, batching, async patterns
+________________
+
+
+Layer 6 — Evaluation & Production
+This is the most underdeveloped area in most AI engineering curricula and also where projects fail silently.
+LLM Evaluation
+* Why traditional software testing doesn't directly apply
+* LLM-as-judge patterns
+* RAGAS or equivalent for RAG evaluation
+* Building eval datasets — golden sets, adversarial cases
+* Regression testing for prompts
+Observability & Monitoring
+* Tracing LLM calls in production — LangSmith, Langfuse, Helicone
+* Logging inputs/outputs safely (PII considerations)
+* Latency, cost, and quality dashboards
+* Detecting prompt drift and model degradation
+AI Safety & Responsible Use (short but non-negotiable)
+* Prompt injection and jailbreak awareness
+* Bias and fairness considerations
+* When not to use LLMs — rule-based systems still win in many cases
+* Data privacy when calling external model APIs
