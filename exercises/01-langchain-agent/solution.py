@@ -1,7 +1,8 @@
 """
-Exercise 1: LangChain Agent — Research Assistant (SOLUTION)
-============================================================
-A ReAct agent with web search, calculator, and Wikipedia tools.
+Exercise 1: LangChain Chains & Agents (SOLUTION)
+==================================================
+Part A — LCEL chain (deterministic multi-step pipeline).
+Part B — ReAct agent with tools.
 
 Run with: python solution.py
 """
@@ -11,6 +12,8 @@ from datetime import datetime
 from pathlib import Path
 
 from dotenv import load_dotenv
+from langchain_core.output_parsers import StrOutputParser
+from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.tools import tool
 from langchain_openai import ChatOpenAI
 from langchain_tavily import TavilySearch
@@ -26,10 +29,32 @@ env_path = Path(__file__).resolve().parent.parent.parent / ".env"
 load_dotenv(dotenv_path=env_path)
 
 llm = ChatOpenAI(model="gpt-4o", temperature=0)
+parser = StrOutputParser()
 
 
 # ============================================================
-# STEP 2a: Web Search Tool
+# PART A: BUILD A LANGCHAIN CHAIN
+# ============================================================
+
+
+# ============================================================
+# STEP 2: Simple Chain — prompt | llm | parser
+# ============================================================
+
+explain_prompt = ChatPromptTemplate.from_messages([
+    ("system", "You are a helpful teacher. Explain topics clearly in 2-3 sentences."),
+    ("user", "Explain {topic}"),
+])
+explain_chain = explain_prompt | llm | parser
+
+
+# ============================================================
+# PART B: BUILD A LANGCHAIN AGENT
+# ============================================================
+
+
+# ============================================================
+# STEP 4a: Web Search Tool
 # ============================================================
 
 tavily_search = TavilySearch(max_results=3)
@@ -45,7 +70,7 @@ def search_web(query: str) -> str:
 
 
 # ============================================================
-# STEP 2b: Calculator Tool
+# STEP 4b: Calculator Tool
 # ============================================================
 
 @tool
@@ -59,7 +84,7 @@ def calculate(expression: str) -> str:
 
 
 # ============================================================
-# STEP 2c: Wikipedia Tool
+# STEP 4c: Wikipedia Tool
 # ============================================================
 
 wiki_api = WikipediaAPIWrapper(top_k_results=1, doc_content_chars_max=1000)
@@ -72,7 +97,7 @@ def wiki_search(query: str) -> str:
 
 
 # ============================================================
-# STEP 3: Create the Agent
+# STEP 5: Create the Agent
 # ============================================================
 
 system_prompt = (
@@ -87,7 +112,7 @@ agent = create_agent(llm, tools, system_prompt=system_prompt)
 
 
 # ============================================================
-# STEP 4: Test the Agent
+# STEP 6: Test the Agent
 # ============================================================
 
 def run_query(query: str):
@@ -102,7 +127,7 @@ def run_query(query: str):
 
 
 # ============================================================
-# STEP 5: Custom Tool — Current Time
+# STEP 7: Custom Tool — Current Time
 # ============================================================
 
 @tool
@@ -115,7 +140,7 @@ agent_extended = create_agent(llm, tools_extended, system_prompt=system_prompt)
 
 
 # ============================================================
-# STEP 6: Observe the ReAct Loop
+# STEP 8: Observe the ReAct Loop
 # ============================================================
 
 def run_query_streaming(query: str):
@@ -140,10 +165,20 @@ def run_query_streaming(query: str):
 # ============================================================
 
 if __name__ == "__main__":
-    print("Layer 4 Workshop — Exercise 1: LangChain Agent (SOLUTION)")
+    print("Layer 4 Workshop — Exercise 1: LangChain Chains & Agents (SOLUTION)")
     print("=" * 60)
 
-    # Step 4: Basic queries
+    # ---- Part A: Chains ----
+    print("\n\n--- PART A: CHAINS ---\n")
+
+    # Step 2: Simple chain
+    result = explain_chain.invoke({"topic": "quantum computing"})
+    print(f"Simple chain result:\n{result}\n")
+
+    # ---- Part B: Agent ----
+    print("\n\n--- PART B: AGENT ---\n")
+
+    # Step 6: Basic queries
     run_query("What is the current population of Japan?")
 
     run_query(
@@ -153,14 +188,14 @@ if __name__ == "__main__":
 
     run_query("Give me a brief summary of the Theory of Relativity from Wikipedia.")
 
-    # Step 5: Custom tool test
+    # Step 7: Custom tool test
     print("\n\n--- Testing with extended agent (includes get_current_time) ---")
     result = agent_extended.invoke(
         {"messages": [("user", "What is today's date and time?")]}
     )
     print(f"\nAgent Response:\n{result['messages'][-1].content}")
 
-    # Step 6: Streaming to observe ReAct loop
+    # Step 8: Streaming to observe ReAct loop
     run_query_streaming(
         "Search for the GDP of India, then calculate what 15% of it would be."
     )

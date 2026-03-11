@@ -1,7 +1,8 @@
 """
-Exercise 1: LangChain Agent — Research Assistant
-=================================================
-Build a ReAct agent with web search, calculator, and Wikipedia tools.
+Exercise 1: LangChain Chains & Agents
+======================================
+Part A — Build an LCEL chain (deterministic multi-step pipeline).
+Part B — Build a ReAct agent with tools.
 
 Instructions: Fill in each TODO section. Run with: python starter.py
 """
@@ -10,6 +11,8 @@ import os
 from pathlib import Path
 
 from dotenv import load_dotenv
+from langchain_core.output_parsers import StrOutputParser
+from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.tools import tool
 from langchain_openai import ChatOpenAI
 from langchain_tavily import TavilySearch
@@ -34,7 +37,47 @@ llm = None  # <-- Replace this line
 
 
 # ============================================================
-# STEP 2a: Web Search Tool
+# PART A: BUILD A LANGCHAIN CHAIN
+# ============================================================
+# A chain is a fixed pipeline — every input follows the same
+# deterministic path. No decisions, no branching, no loops.
+# ============================================================
+
+
+# ============================================================
+# STEP 2: Simple Chain — prompt | llm | parser
+# ============================================================
+
+# TODO: Create a simple chain that takes a topic and explains it
+# 1. Create a ChatPromptTemplate with:
+#    - system message: "You are a helpful teacher. Explain topics clearly in 2-3 sentences."
+#    - user message: "Explain {topic}"
+# 2. Create a StrOutputParser
+# 3. Chain them: prompt | llm | parser
+# 4. Test with .invoke({"topic": "quantum computing"})
+#
+# Example:
+#   explain_prompt = ChatPromptTemplate.from_messages([
+#       ("system", "..."),
+#       ("user", "Explain {topic}"),
+#   ])
+#   parser = StrOutputParser()
+#   explain_chain = explain_prompt | llm | parser
+
+# Your code here:
+explain_chain = None  # <-- Replace this
+
+
+# ============================================================
+# PART B: BUILD A LANGCHAIN AGENT
+# ============================================================
+# An agent is different — the LLM decides which tools to call,
+# in what order, and when to stop. It's a reasoning loop.
+# ============================================================
+
+
+# ============================================================
+# STEP 4a: Web Search Tool
 # ============================================================
 
 # TODO: Create a web search tool using TavilySearch
@@ -59,7 +102,7 @@ llm = None  # <-- Replace this line
 
 
 # ============================================================
-# STEP 2b: Calculator Tool
+# STEP 4b: Calculator Tool
 # ============================================================
 
 # TODO: Create a calculator tool
@@ -78,7 +121,7 @@ llm = None  # <-- Replace this line
 
 
 # ============================================================
-# STEP 2c: Wikipedia Tool
+# STEP 4c: Wikipedia Tool
 # ============================================================
 
 # TODO: Create a Wikipedia search tool
@@ -101,7 +144,7 @@ llm = None  # <-- Replace this line
 
 
 # ============================================================
-# STEP 3: Create the Agent
+# STEP 5: Create the Agent
 # ============================================================
 
 # TODO: Assemble the agent
@@ -119,7 +162,7 @@ agent = None  # <-- Replace this line
 
 
 # ============================================================
-# STEP 4: Test the Agent
+# STEP 6: Test the Agent
 # ============================================================
 
 def run_query(query: str):
@@ -138,7 +181,7 @@ def run_query(query: str):
 
 
 # ============================================================
-# STEP 5: Add a Custom Tool (Bonus)
+# STEP 7: Add a Custom Tool (Bonus)
 # ============================================================
 
 # TODO (Bonus): Create your own tool!
@@ -153,7 +196,7 @@ def run_query(query: str):
 
 
 # ============================================================
-# STEP 6: Observe the ReAct Loop
+# STEP 8: Observe the ReAct Loop
 # ============================================================
 
 def run_query_streaming(query: str):
@@ -184,10 +227,23 @@ def run_query_streaming(query: str):
 # ============================================================
 
 if __name__ == "__main__":
-    print("Layer 4 Workshop — Exercise 1: LangChain Agent")
+    print("Layer 4 Workshop — Exercise 1: LangChain Chains & Agents")
     print("=" * 60)
 
-    # Step 4: Test with these queries
+    # ---- Part A: Chains ----
+    print("\n\n--- PART A: CHAINS ---\n")
+
+    # Step 2: Simple chain
+    if explain_chain is not None:
+        result = explain_chain.invoke({"topic": "quantum computing"})
+        print(f"Simple chain result:\n{result}\n")
+    else:
+        print("Step 2 not complete: explain_chain is None\n")
+
+    # ---- Part B: Agent ----
+    print("\n\n--- PART B: AGENT ---\n")
+
+    # Step 6: Test the agent
     run_query("What is the current population of Japan?")
 
     run_query(
@@ -197,7 +253,7 @@ if __name__ == "__main__":
 
     run_query("Give me a brief summary of the Theory of Relativity from Wikipedia.")
 
-    # Step 6: Uncomment to see the ReAct loop in action
+    # Step 8: Uncomment to see the ReAct loop in action
     # run_query_streaming(
     #     "Search for the GDP of India, then calculate what 15% of it would be."
     # )
