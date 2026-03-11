@@ -11,6 +11,7 @@ import operator
 from pathlib import Path
 from typing import Annotated, TypedDict
 
+from IPython.display import display
 from dotenv import load_dotenv
 from langchain_openai import ChatOpenAI
 from langchain_tavily import TavilySearch
@@ -197,7 +198,8 @@ def visualize():
         print("ERROR: Graph is not initialized. Complete the TODOs above first.")
         return
     print("\nGraph structure (Mermaid):")
-    print(graph.get_graph().draw_mermaid())
+    from IPython.display import Image, display
+    display(Image(graph.get_graph().draw_mermaid_png()))
 
 
 # ============================================================

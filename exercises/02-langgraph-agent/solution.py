@@ -190,7 +190,8 @@ graph = builder.compile(checkpointer=checkpointer)
 def visualize():
     """Print the graph structure as Mermaid text."""
     print("\nGraph structure (Mermaid):")
-    print(graph.get_graph().draw_mermaid())
+    from IPython.display import Image, display
+    display(Image(graph.get_graph().draw_mermaid_png()))
 
 
 # ============================================================
